@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Team/Organization
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  settings  Json?    @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agents   Agent[]
+  tickets  Ticket[]
+}
+
+// Agent/Support team member
+model Agent {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String   // External user ID (from auth provider)
+  role      AgentRole @default(AGENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tickets Ticket[] // Assigned tickets
+
+  @@unique([teamId, userId])
+}
+
+enum AgentRole {
+  ADMIN
+  AGENT
+}
+
+// Customer
+model Customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  metadata  Json?    @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tickets Ticket[]
+}
+
+// Ticket
+model Ticket {
+  id                String          @id @default(cuid())
+  teamId            String
+  customerId        String
+  assignedAgentId   String?
+  subject           String
+  description       String?         @db.Text
+  status            TicketStatus    @default(OPEN)
+  priority          TicketPriority  @default(MEDIUM)
+  category          String?         // Auto-categorized by AI
+  sentimentScore    Float?          // -1 (negative) to 1 (positive)
+  aiSummary         String?         @db.Text
+  createdAt         DateTime        @default(now())
+  resolvedAt        DateTime?
+
+  team    Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  agent   Agent?   @relation(fields: [assignedAgentId], references: [id])
+  messages Message[]
+  aiLogs  AiLog[]
+
+  @@index([teamId])
+  @@index([customerId])
+  @@index([assignedAgentId])
+  @@index([status])
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// Message in a ticket thread
+model Message {
+  id        String   @id @default(cuid())
+  ticketId  String
+  senderType SenderType
+  senderId  String   // Agent ID or Customer ID
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
+
+enum SenderType {
+  CUSTOMER
+  AGENT
+}
+
+// AI processing logs
+model AiLog {
+  id         String    @id @default(cuid())
+  ticketId   String
+  actionType AiActionType
+  input      Json?
+  output     Json?
+  tokensUsed Int?
+  createdAt  DateTime  @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
+
+enum AiActionType {
+  SUMMARIZE
+  SENTIMENT
+  CATEGORIZE
+  SUGGEST_REPLY
+  SUGGEST_PRIORITY
+}

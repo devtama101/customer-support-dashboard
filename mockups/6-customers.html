@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - Customer Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-900 text-white">
+            <div class="p-6">
+                <h1 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="message-square" class="w-6 h-6"></i>
+                    SupportHub
+                </h1>
+            </div>
+            <nav class="mt-6">
+                <a href="1-dashboard.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    Dashboard
+                </a>
+                <a href="2-tickets.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="ticket" class="w-5 h-5"></i>
+                    Tickets
+                </a>
+                <a href="6-customers.html" class="flex items-center gap-3 px-6 py-3 bg-gray-800 border-l-4 border-blue-500">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    Customers
+                </a>
+                <a href="5-agent-performance.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    Performance
+                </a>
+                <a href="7-settings.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <!-- Header -->
+            <header class="bg-white border-b px-8 py-4 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Customers</h2>
+                    <p class="text-gray-500 text-sm">Manage customer information and history</p>
+                </div>
+                <a href="8-new-ticket.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Add Customer
+                </a>
+            </header>
+
+            <div class="p-8">
+                <!-- Filters -->
+                <div class="bg-white rounded-xl p-4 shadow-sm border mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1 relative">
+                            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" placeholder="Search customers by name or email..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <select class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>All Engagement</option>
+                            <option>High - Active</option>
+                            <option>Medium - Occasional</option>
+                            <option>Low - Dormant</option>
+                        </select>
+                        <select class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Sort by: Recent</option>
+                            <option>Sort by: Name</option>
+                            <option>Sort by: Tickets</option>
+                            <option>Sort by: Sentiment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Customer Cards -->
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Customer Card 1 -->
+                    <a href="9-customer-detail.html" class="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow cursor-pointer block">
+                        <div class="p-6">
+                            <div class="flex items-start gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" class="w-16 h-16 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold text-lg">John Doe</h4>
+                                            <p class="text-gray-500 text-sm">john.doe@email.com</p>
+                                        </div>
+                                        <span class="w-3 h-3 bg-green-500 rounded-full" title="Positive sentiment"></span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm">
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="ticket" class="w-4 h-4"></i>
+                                            12 tickets
+                                        </span>
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            Last: 2h ago
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Sentiment Trend</span>
+                                    <span class="text-green-600 font-medium">Positive ↑</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2">
+                                    <div class="w-2 h-6 bg-red-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-600 rounded-sm"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">High Engagement</span>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">VIP</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Customer Card 2 -->
+                    <a href="9-customer-detail.html" class="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow cursor-pointer block">
+                        <div class="p-6">
+                            <div class="flex items-start gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jane" class="w-16 h-16 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold text-lg">Jane Smith</h4>
+                                            <p class="text-gray-500 text-sm">jane.smith@email.com</p>
+                                        </div>
+                                        <span class="w-3 h-3 bg-red-500 rounded-full" title="Negative sentiment"></span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm">
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="ticket" class="w-4 h-4"></i>
+                                            8 tickets
+                                        </span>
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            Last: 4h ago
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Sentiment Trend</span>
+                                    <span class="text-red-600 font-medium">Negative ↓</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2">
+                                    <div class="w-2 h-6 bg-green-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-600 rounded-sm"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full">Needs Attention</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Customer Card 3 -->
+                    <a href="9-customer-detail.html" class="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow cursor-pointer block">
+                        <div class="p-6">
+                            <div class="flex items-start gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" class="w-16 h-16 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold text-lg">Mike Johnson</h4>
+                                            <p class="text-gray-500 text-sm">mike.j@email.com</p>
+                                        </div>
+                                        <span class="w-3 h-3 bg-yellow-500 rounded-full" title="Neutral sentiment"></span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm">
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="ticket" class="w-4 h-4"></i>
+                                            5 tickets
+                                        </span>
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            Last: 1d ago
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Sentiment Trend</span>
+                                    <span class="text-yellow-600 font-medium">Neutral →</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2">
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-yellow-500 rounded-sm"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Medium Engagement</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Customer Card 4 -->
+                    <a href="9-customer-detail.html" class="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow cursor-pointer block">
+                        <div class="p-6">
+                            <div class="flex items-start gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" class="w-16 h-16 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold text-lg">Alex Chen</h4>
+                                            <p class="text-gray-500 text-sm">alex.chen@email.com</p>
+                                        </div>
+                                        <span class="w-3 h-3 bg-green-500 rounded-full" title="Positive sentiment"></span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm">
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="ticket" class="w-4 h-4"></i>
+                                            3 tickets
+                                        </span>
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            Last: 3d ago
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Sentiment Trend</span>
+                                    <span class="text-green-600 font-medium">Positive ↑</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2">
+                                    <div class="w-2 h-6 bg-green-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-600 rounded-sm"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Low Engagement</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">Happy</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Customer Card 5 -->
+                    <a href="9-customer-detail.html" class="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow cursor-pointer block">
+                        <div class="p-6">
+                            <div class="flex items-start gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" class="w-16 h-16 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold text-lg">Lisa Park</h4>
+                                            <p class="text-gray-500 text-sm">lisa.park@email.com</p>
+                                        </div>
+                                        <span class="w-3 h-3 bg-green-500 rounded-full" title="Positive sentiment"></span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm">
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="ticket" class="w-4 h-4"></i>
+                                            15 tickets
+                                        </span>
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            Last: 5h ago
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Sentiment Trend</span>
+                                    <span class="text-green-600 font-medium">Positive ↑</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2">
+                                    <div class="w-2 h-6 bg-green-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-green-600 rounded-sm"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">High Engagement</span>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">VIP</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">Power User</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Customer Card 6 - At Risk -->
+                    <a href="9-customer-detail.html" class="bg-white rounded-xl shadow-sm border border-red-200 hover:shadow-md transition-shadow cursor-pointer block">
+                        <div class="p-6">
+                            <div class="flex items-start gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tom" class="w-16 h-16 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold text-lg">Tom Brown</h4>
+                                            <p class="text-gray-500 text-sm">tom.brown@email.com</p>
+                                        </div>
+                                        <span class="w-3 h-3 bg-red-500 rounded-full" title="Negative sentiment"></span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm">
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="ticket" class="w-4 h-4"></i>
+                                            2 tickets
+                                        </span>
+                                        <span class="flex items-center gap-1 text-gray-500">
+                                            <i data-lucide="clock" class="w-4 h-4"></i>
+                                            Last: 7d ago
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Sentiment Trend</span>
+                                    <span class="text-red-600 font-medium">Negative ↓</span>
+                                </div>
+                                <div class="flex items-center gap-1 mt-2">
+                                    <div class="w-2 h-6 bg-red-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-600 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-500 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-400 rounded-sm"></div>
+                                    <div class="w-2 h-6 bg-red-500 rounded-sm"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full">At Risk</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Churn Warning</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between mt-8">
+                    <p class="text-sm text-gray-500">Showing 1-6 of 128 customers</p>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-50" disabled>Previous</button>
+                        <button class="px-3 py-1 bg-blue-600 text-white rounded">1</button>
+                        <button onclick="location.href='6-customers.html'" class="px-3 py-1 border rounded hover:bg-gray-100">2</button>
+                        <button onclick="location.href='6-customers.html'" class="px-3 py-1 border rounded hover:bg-gray-100">3</button>
+                        <button class="px-3 py-1 border rounded hover:bg-gray-100">...</button>
+                        <button onclick="location.href='6-customers.html'" class="px-3 py-1 border rounded hover:bg-gray-100">22</button>
+                        <button onclick="location.href='6-customers.html'" class="px-3 py-1 border rounded hover:bg-gray-100">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>

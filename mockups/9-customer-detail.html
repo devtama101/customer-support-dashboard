@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Customer Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-900 text-white">
+            <div class="p-6">
+                <h1 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="message-square" class="w-6 h-6"></i>
+                    SupportHub
+                </h1>
+            </div>
+            <nav class="mt-6">
+                <a href="1-dashboard.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    Dashboard
+                </a>
+                <a href="2-tickets.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="ticket" class="w-5 h-5"></i>
+                    Tickets
+                </a>
+                <a href="6-customers.html" class="flex items-center gap-3 px-6 py-3 bg-gray-800 border-l-4 border-blue-500">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    Customers
+                </a>
+                <a href="5-agent-performance.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    Performance
+                </a>
+                <a href="7-settings.html" class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-gray-800">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <!-- Header -->
+            <header class="bg-white border-b px-8 py-4 flex items-center gap-4">
+                <a href="6-customers.html" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600"></i>
+                </a>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-gray-800">John Doe</h2>
+                    <p class="text-gray-500 text-sm">Customer since January 2024</p>
+                </div>
+                <button class="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                    <i data-lucide="edit" class="w-4 h-4"></i>
+                    Edit
+                </button>
+            </header>
+
+            <div class="p-8">
+                <!-- Customer Header -->
+                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                    <div class="flex items-start gap-6">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" class="w-20 h-20 rounded-full">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-xl font-semibold">John Doe</h3>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">VIP</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">High Engagement</span>
+                            </div>
+                            <p class="text-gray-500">john.doe@email.com</p>
+                            <p class="text-sm text-gray-400 mt-1">+1 (555) 123-4567</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                                Email
+                            </button>
+                            <a href="8-new-ticket.html" class="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                New Ticket
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <p class="text-gray-500 text-sm mb-1">Total Tickets</p>
+                        <p class="text-3xl font-bold text-gray-800">12</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <p class="text-gray-500 text-sm mb-1">Open Tickets</p>
+                        <p class="text-3xl font-bold text-blue-600">2</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <p class="text-gray-500 text-sm mb-1">Avg Sentiment</p>
+                        <p class="text-3xl font-bold text-green-600">Positive</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <p class="text-gray-500 text-sm mb-1">Lifetime Value</p>
+                        <p class="text-3xl font-bold text-gray-800">$2,450</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Ticket History -->
+                    <div class="col-span-2 bg-white rounded-xl shadow-sm border">
+                        <div class="p-4 border-b flex items-center justify-between">
+                            <h3 class="font-semibold">Ticket History</h3>
+                            <a href="2-tickets.html" class="text-blue-600 text-sm hover:underline">View all</a>
+                        </div>
+                        <div class="divide-y">
+                            <a href="3-ticket-detail.html" class="block p-4 hover:bg-gray-50">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2"></span>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <p class="font-medium">Unable to connect my account to Google</p>
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Open</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">Integration • 2 hours ago</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="3-ticket-detail.html" class="block p-4 hover:bg-gray-50">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2"></span>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <p class="font-medium">Question about API usage limits</p>
+                                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Resolved</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">Integration • 2 days ago</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="3-ticket-detail.html" class="block p-4 hover:bg-gray-50">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></span>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <p class="font-medium">Billing inquiry for March</p>
+                                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Closed</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">Billing • 1 week ago</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="3-ticket-detail.html" class="block p-4 hover:bg-gray-50">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2"></span>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <p class="font-medium">Feature request: bulk export</p>
+                                            <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">In Progress</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">Feature Request • 2 weeks ago</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Notes & Sentiment -->
+                    <div class="space-y-6">
+                        <!-- Sentiment Trend -->
+                        <div class="bg-white rounded-xl shadow-sm border p-6">
+                            <h3 class="font-semibold mb-4">Sentiment Trend</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">Current</span>
+                                    <span class="text-green-600 font-medium">Positive</span>
+                                </div>
+                                <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-500 w-full"></div>
+                                    <div class="relative h-0" style="top: -12px;">
+                                        <div class="w-0.5 h-4 bg-gray-800 absolute left-0"></div>
+                                        <div class="w-0.5 h-4 bg-gray-800 absolute left-1/4"></div>
+                                        <div class="w-0.5 h-4 bg-gray-800 absolute left-1/2"></div>
+                                        <div class="w-0.5 h-4 bg-gray-800 absolute left-3/4"></div>
+                                        <div class="w-0.5 h-4 bg-gray-800 absolute right-0"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-xs text-gray-400">
+                                    <span>Jan</span>
+                                    <span>Feb</span>
+                                    <span>Mar</span>
+                                    <span>Apr</span>
+                                    <span>May</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="bg-white rounded-xl shadow-sm border p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold">Notes</h3>
+                                <button class="text-blue-600 text-sm hover:underline">+ Add</button>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="w-5 h-5 rounded-full">
+                                        <span class="text-sm font-medium">Sarah Wilson</span>
+                                        <span class="text-xs text-gray-400">2h ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">VIP customer - prioritize responses. Has enterprise plan.</p>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" class="w-5 h-5 rounded-full">
+                                        <span class="text-sm font-medium">Mike Johnson</span>
+                                        <span class="text-xs text-gray-400">1w ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Prefers email over chat. Works in EST timezone.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="bg-white rounded-xl shadow-sm border p-6">
+                            <h3 class="font-semibold mb-4">Metadata</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Plan</span>
+                                    <span class="font-medium">Enterprise</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Company</span>
+                                    <span class="font-medium">Acme Inc</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Location</span>
+                                    <span class="font-medium">New York, USA</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Timezone</span>
+                                    <span class="font-medium">EST (UTC-5)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
