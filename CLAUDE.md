@@ -24,8 +24,8 @@ npx prisma db seed    # Seed demo data
 | UI | shadcn/ui + Tailwind CSS |
 | Auth | NextAuth v5 (Credentials + Google OAuth) |
 | DB | PostgreSQL + Prisma 7 |
-| AI | Vercel AI SDK + OpenAI (gpt-4o-mini) |
-| Real-time | Pusher (not fully implemented) |
+| AI | Vercel AI SDK + Groq (llama-3.1-8b-instant) |
+| Real-time | Pusher |
 | Charts | Recharts |
 
 ---
@@ -42,6 +42,21 @@ Database (Prisma) → Server Actions → Types → Components → Pages
 - Interactivity (onClick, useState, etc.)
 - Browser APIs (localStorage, etc.)
 - Third-party libs that require React context
+
+---
+
+## Coding Conventions
+
+**See [CONVENTIONS.md](./CONVENTIONS.md) for the complete coding standards.**
+
+Quick reference:
+- Server Actions: `'use server'` at top, named exports, type cast Prisma results
+- Types: `EntityWithRelations`, `CreateEntityInput`, `EntityFilters`
+- Imports: React → Third-party → Internal lib → Actions → Components
+- Components: Props interface, destructure in params, `cn()` for styles
+- Next.js 16: `await params`, `await searchParams` (both are Promises)
+- Auth: `await auth()` at start of protected pages
+- Error handling: `notFound()` for missing, `console.error()` for async errors
 
 ---
 
@@ -211,27 +226,40 @@ const phone = (metadata?.phone as string) || '';
 
 ---
 
-## Known Issues / TODO
+## Completed Features
 
-1. **Pusher real-time** - Partially implemented, needs full integration
-2. **Floating widget button** - Currently iframe only
-3. **Performance page** - Placeholder, needs charts
-4. **Settings page** - Placeholder, needs forms
-5. **404/500 error pages** - Not implemented
-6. **Dark mode** - Removed per user feedback
+- ✅ **Pusher real-time** - Full integration with message updates and ticket notifications
+- ✅ **Floating widget button** - `embed.js` script creates floating chat bubble
+- ✅ **Customer rating** - Widget shows rating prompt after ticket resolution
+- ✅ **Performance page** - Real metrics from database
+- ✅ **404/500 error pages** - Custom error and not-found pages
+- ✅ **Settings page** - Team name update, auto-assignment rules (add/delete)
+- ✅ **Groq AI integration** - Using llama-3.1-8b-instant
 
 ---
 
 ## Widget Integration
 
 Widget is embeddable via:
+
+**Floating Button (Recommended):**
 ```html
-<script src="/widget/embed.js" data-team-id="xxx"></script>
+<script src="https://your-domain.com/widget/embed.js" data-team-id="xxx"></script>
 ```
 
-Or iframe:
+Options:
+- `data-position`: 'left' | 'right' (default: 'right')
+- `data-color`: Primary color hex (default: '#3b82f6')
+- `data-title`: Widget title (default: 'Support Chat')
+- `data-greeting`: Greeting message
+
+**Iframe:**
 ```html
 <iframe src="/widget/xxx" width="380" height="600"></iframe>
 ```
+
+**Customer Rating:**
+After a ticket is resolved, customers can rate their experience (1-5 stars). The rating appears:
+automatically when the agent marks the ticket as resolved/closed.
 
 See `/dashboard/widget-demo` for full integration docs.
