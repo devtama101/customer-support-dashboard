@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import type { TicketFilters, TicketWithRelations, CreateTicketInput, UpdateTicketInput } from '@/types';
 import { TicketStatus, TicketPriority } from '@prisma/client';
+import pusher from '@/lib/pusher';
 
 /**
  * Get all tickets with optional filters
@@ -105,6 +106,17 @@ export async function createTicket(data: CreateTicketInput & { teamId: string })
     },
   });
 
+  // Trigger Pusher event for sidebar notification
+  if (pusher) {
+    try {
+      await pusher.trigger(`presence-team-${data.teamId}`, 'new-ticket', {
+        ticketId: ticket.id,
+      });
+    } catch (error) {
+      console.error('Failed to trigger new-ticket event:', error);
+    }
+  }
+
   return ticket as TicketWithRelations;
 }
 
@@ -193,6 +205,44 @@ export async function deleteTicket(id: string): Promise<void> {
   await prisma.ticket.delete({
     where: { id },
   });
+}
+
+/**
+ * Rate a ticket (customer satisfaction)
+ */
+export async function rateTicket(
+  id: string,
+  rating: number,
+  comment?: string
+): Promise<TicketWithRelations> {
+  // Validate rating
+  if (rating < 1 || rating > 5) {
+    throw new Error('Rating must be between 1 and 5');
+  }
+
+  const ticket = await prisma.ticket.update({
+    where: { id },
+    data: {
+      rating,
+      ratingComment: comment || null,
+      ratedAt: new Date(),
+    },
+    include: {
+      customer: true,
+      agent: {
+        include: {
+          user: true,
+        },
+      },
+      team: true,
+      messages: true,
+      _count: {
+        select: { messages: true },
+      },
+    },
+  });
+
+  return ticket as TicketWithRelations;
 }
 
 /**

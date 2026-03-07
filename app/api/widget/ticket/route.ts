@@ -2,6 +2,48 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { analyzeSentiment, categorizeTicket } from '@/lib/ai';
 
+/**
+ * GET /api/widget/ticket?id=xxx
+ * Check ticket status for rating prompt
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const ticketId = searchParams.get('id');
+
+    if (!ticketId) {
+      return NextResponse.json(
+        { error: 'Ticket ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+      select: {
+        id: true,
+        status: true,
+        rating: true,
+      },
+    });
+
+    if (!ticket) {
+      return NextResponse.json(
+        { error: 'Ticket not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(ticket);
+  } catch (error) {
+    console.error('Failed to get ticket:', error);
+    return NextResponse.json(
+      { error: 'Failed to get ticket' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -85,7 +127,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      ticketId: ticket.id.slice(0, 8).toUpperCase(),
+      ticketId: ticket.id,
+      ticketDisplayId: ticket.id.slice(0, 8).toUpperCase(),
       message: 'Ticket created successfully',
     });
   } catch (error) {

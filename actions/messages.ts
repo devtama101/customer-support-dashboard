@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import type { CreateMessageInput } from '@/lib/schemas';
 import { SenderType } from '@prisma/client';
 import { analyzeSentiment, categorizeTicket } from '@/lib/ai';
+import pusher from '@/lib/pusher';
 
 /**
  * Get all messages for a ticket
@@ -58,6 +59,31 @@ export async function addMessage(data: CreateMessageInput) {
             : {}),
         },
       });
+    }
+  }
+
+  // Trigger Pusher event for real-time update (if available)
+  if (pusher) {
+    try {
+      // Get the ticket to find teamId for channel name
+      const ticket = await prisma.ticket.findUnique({
+        where: { id: data.ticketId },
+        select: { teamId: true },
+      });
+
+      if (ticket) {
+        await pusher.trigger(`private-ticket-${ticket.teamId}-${data.ticketId}`, 'new-message', {
+          id: message.id,
+          ticketId: message.ticketId,
+          senderType: message.senderType,
+          senderId: message.senderId,
+          body: message.body,
+          createdAt: message.createdAt.toISOString(),
+        });
+      }
+    } catch (error) {
+      console.error('Failed to trigger Pusher event:', error);
+      // Don't fail the request if Pusher fails
     }
   }
 
