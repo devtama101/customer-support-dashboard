@@ -15,6 +15,10 @@
     return scripts[scripts.length - 1];
   })();
 
+  // Detect base URL from script src
+  const scriptSrc = script.getAttribute('src') || '';
+  const baseUrl = scriptSrc.replace('/widget/embed.js', '') || window.location.origin;
+
   const config = {
     teamId: script.getAttribute('data-team-id') || '',
     position: script.getAttribute('data-position') || 'right', // 'left' or 'right'
@@ -23,6 +27,7 @@
     title: script.getAttribute('data-title') || 'Support Chat',
     greeting: script.getAttribute('data-greeting') || 'Hi there! How can I help you?',
     buttonText: script.getAttribute('data-button-text') || 'Chat with us',
+    baseUrl: baseUrl,
   };
 
   if (!config.teamId) {
@@ -39,10 +44,7 @@
   const iframe = document.createElement('iframe');
   iframe.id = 'sh-widget-iframe';
   iframe.className = 'sh-widget-iframe';
-  iframe.src = new URL(
-    '/widget/' + config.teamId + '?theme=' + config.theme,
-    window.location.origin
-  ).href;
+  iframe.src = config.baseUrl + '/widget/' + config.teamId + '?theme=' + config.theme;
   iframe.setAttribute('allowtransparency', 'true');
   iframe.setAttribute('allow', 'forms; submissions');
 

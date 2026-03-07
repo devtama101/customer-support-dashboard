@@ -192,6 +192,10 @@ export default async function WidgetPage({
                 const form = document.getElementById('ticket-form');
                 const messagesArea = document.getElementById('messages-area');
                 const teamId = '${teamId}';
+                const storageKey = 'supporthub_ticket_' + teamId;
+
+                // Check for existing ticket on load
+                checkExistingTicket();
 
                 form.addEventListener('submit', async function(e) {
                   e.preventDefault();
@@ -228,12 +232,25 @@ export default async function WidgetPage({
 
                     if (response.ok) {
                       const data = await response.json();
-                      addMessage('Thanks! I\\'ve created a ticket #' + data.ticketId + ' for you. You\\'ll receive an email confirmation shortly. A support agent will be with you soon! 🎫', 'bot');
+                      const ticketId = data.ticketId;
+
+                      // Store ticket info for rating
+                      localStorage.setItem(storageKey, JSON.stringify({
+                        id: data.ticketId,
+                        displayId: data.ticketDisplayId,
+                        email: email,
+                        createdAt: new Date().toISOString()
+                      }));
+
+                      addMessage('Thanks! Ticket #' + data.ticketDisplayId + ' created. A support agent will respond shortly! 🎫', 'bot');
 
                       // Disable form after ticket creation
                       form.querySelectorAll('input, textarea, button').forEach(el => {
                         el.disabled = true;
                       });
+
+                      // Start polling for ticket status
+                      startStatusPolling(ticketId);
                     } else {
                       addMessage('Sorry, there was an error creating your ticket. Please try again.', 'bot');
                     }
@@ -242,6 +259,136 @@ export default async function WidgetPage({
                     addMessage('Sorry, there was an error creating your ticket. Please try again.', 'bot');
                   }
                 });
+
+                function checkExistingTicket() {
+                  const stored = localStorage.getItem(storageKey);
+                  if (stored) {
+                    try {
+                      const data = JSON.parse(stored);
+                      // Check if ticket is resolved
+                      checkTicketStatus(data.id);
+                    } catch (e) {
+                      localStorage.removeItem(storageKey);
+                    }
+                  }
+                }
+
+                async function checkTicketStatus(ticketId) {
+                  try {
+                    const response = await fetch('/api/widget/ticket?id=' + ticketId);
+                    if (response.ok) {
+                      const ticket = await response.json();
+                      if (ticket.status === 'RESOLVED' || ticket.status === 'CLOSED') {
+                        if (!ticket.rating) {
+                          showRatingPrompt(ticketId);
+                        }
+                      }
+                    }
+                  } catch (e) {
+                    // Silently fail
+                  }
+                }
+
+                function startStatusPolling(ticketId) {
+                  // Poll every 10 seconds for ticket status
+                  const interval = setInterval(async () => {
+                    try {
+                      const response = await fetch('/api/widget/ticket?id=' + ticketId);
+                      if (response.ok) {
+                        const ticket = await response.json();
+                        if (ticket.status === 'RESOLVED' || ticket.status === 'CLOSED') {
+                          clearInterval(interval);
+                          addMessage('Great news! Your ticket has been resolved. 🎉', 'bot');
+                          setTimeout(() => showRatingPrompt(ticketId), 1000);
+                        }
+                      }
+                    } catch (e) {
+                      // Silently fail
+                    }
+                  }, 10000);
+
+                  // Stop polling after 30 minutes
+                  setTimeout(() => clearInterval(interval), 30 * 60 * 1000);
+                }
+
+                function showRatingPrompt(ticketId) {
+                  // Check if already rated
+                  const ratingContainer = document.getElementById('rating-container');
+                  if (ratingContainer) return;
+
+                  const div = document.createElement('div');
+                  div.id = 'rating-container';
+                  div.className = 'flex flex-col gap-3';
+                  div.innerHTML = \`
+                    <div class="bg-white border rounded-xl p-4 max-w-[100%]">
+                      <p class="text-sm font-medium text-gray-700 mb-3">How was your experience?</p>
+                      <div class="flex gap-1 mb-3" id="star-rating">
+                        <button class="star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="1">★</button>
+                        <button class="star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="2">★</button>
+                        <button class="star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="3">★</button>
+                        <button class="star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="4">★</button>
+                        <button class="star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="5">★</button>
+                      </div>
+                      <textarea id="rating-comment" placeholder="Optional feedback..." class="w-full border rounded-lg px-3 py-2 text-sm resize-none" rows="2"></textarea>
+                      <button id="submit-rating" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm mt-2">Submit Rating</button>
+                    </div>
+                  \`;
+
+                  messagesArea.appendChild(div);
+                  messagesArea.scrollTop = messagesArea.scrollHeight;
+
+                  // Handle star hover and click
+                  const stars = div.querySelectorAll('.star');
+                  let selectedRating = 0;
+
+                  stars.forEach((star, index) => {
+                    star.addEventListener('mouseenter', () => {
+                      stars.forEach((s, i) => {
+                        s.classList.toggle('text-yellow-400', i <= index);
+                        s.classList.toggle('text-gray-300', i > index);
+                      });
+                    });
+
+                    star.addEventListener('click', () => {
+                      selectedRating = index + 1;
+                      stars.forEach((s, i) => {
+                        s.classList.toggle('text-yellow-400', i <= index);
+                        s.classList.toggle('text-gray-300', i > index);
+                      });
+                    });
+                  });
+
+                  // Handle rating submission
+                  document.getElementById('submit-rating').addEventListener('click', async () => {
+                    if (selectedRating === 0) {
+                      alert('Please select a rating');
+                      return;
+                    }
+
+                    const comment = document.getElementById('rating-comment').value;
+
+                    try {
+                      const response = await fetch('/api/widget/rate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          ticketId: ticketId,
+                          rating: selectedRating,
+                          comment: comment || null
+                        })
+                      });
+
+                      if (response.ok) {
+                        div.innerHTML = '<div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center"><p class="text-sm text-green-700">Thank you for your feedback! 💚</p></div>';
+                        localStorage.removeItem(storageKey);
+                      } else {
+                        alert('Failed to submit rating. Please try again.');
+                      }
+                    } catch (e) {
+                      alert('Failed to submit rating. Please try again.');
+                    }
+                  });
+                }
 
                 function addMessage(text, type) {
                   const div = document.createElement('div');
@@ -277,7 +424,7 @@ export default async function WidgetPage({
                   return div.innerHTML;
                 }
               })();
-            `,
+            `
           }}
         />
       </div>
