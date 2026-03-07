@@ -83,6 +83,9 @@ model Ticket {
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   resolvedAt        DateTime?
+  rating            Int?      // 1-5 stars (customer satisfaction)
+  ratingComment     String?   // Optional feedback
+  ratedAt           DateTime?
 
   team    Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
