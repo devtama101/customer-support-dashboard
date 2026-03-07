@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <DashboardLayoutWrapper>
+    <DashboardLayoutWrapper teamId={session.user.teamId}>
       {children}
     </DashboardLayoutWrapper>
   );
