@@ -39,7 +39,7 @@ export function SentimentChart({ positive, neutral, negative }: SentimentChartPr
   return (
     <div className="flex items-center gap-8">
       <div className="w-40 h-40">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width={160} height={160}>
           <PieChart>
             <Pie
               data={data}

@@ -1,54 +1,62 @@
 import { auth } from '@/lib/auth';
 import { Header } from '@/components/layout/Header';
-import { Trophy, Download } from 'lucide-react';
+import { Trophy, Download, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getAgents } from '@/actions';
+import { getAgents, getAgentPerformance, getTeamStats } from '@/actions';
+import type { AgentPerformanceData, TeamPerformanceStats } from '@/actions/performance';
 
 export default async function PerformancePage() {
   const session = await auth();
+  const teamId = session?.user?.teamId;
 
-  // Get all agents with their ticket counts
-  const agents = await getAgents();
+  if (!teamId) {
+    return (
+      <>
+        <Header title="Agent Performance" subtitle="Track team metrics and individual performance" />
+        <div className="p-8">
+          <p className="text-gray-500">No team found. Please log in to view performance metrics.</p>
+        </div>
+      </>
+    );
+  }
 
-  // Calculate mock performance metrics based on ticket counts
-  const agentPerformance = agents.map((agent, index) => {
-    // Generate some realistic performance data
-    const resolvedCount = Math.floor(Math.random() * 40) + 10;
-    const responseTime = (Math.random() * 2 + 0.5).toFixed(1);
-    const resolutionRate = Math.floor(Math.random() * 15) + 85;
-    const rating = (Math.random() * 1 + 4).toFixed(1);
+  // Get real performance data from database
+  let agents: any[] = [];
+  let agentPerformanceData: AgentPerformanceData[] = [];
+  let teamStats: TeamPerformanceStats;
 
+  try {
+    [agents, agentPerformanceData, teamStats] = await Promise.all([
+      getAgents(),
+      getAgentPerformance(teamId, 7),
+      getTeamStats(teamId, 7),
+    ]);
+  } catch (error) {
+    console.error('Failed to load performance data:', error);
+    return (
+      <>
+        <Header title="Agent Performance" subtitle="Track team metrics and individual performance" />
+        <div className="p-8">
+          <p className="text-gray-500">Failed to load performance data. Please try again later.</p>
+        </div>
+      </>
+    );
+  }
+
+  // Merge agent data with performance data
+  const agentPerformance = agents.map((agent) => {
+    const perfData = agentPerformanceData.find((p) => p.agentId === agent.id);
     return {
       ...agent,
-      resolvedCount,
-      responseTime,
-      resolutionRate,
-      rating,
+      resolvedCount: perfData?.resolvedCount || 0,
+      responseTime: perfData?.avgResponseTimeHours?.toFixed(1) || '0.0',
+      resolutionRate: perfData?.resolutionRate || 0,
+      rating: perfData?.avgRating?.toFixed(1) || '0.0',
     };
   }).sort((a, b) => b.resolvedCount - a.resolvedCount);
 
-  const teamAvgResponse = (
-    agentPerformance.reduce((sum, a) => sum + parseFloat(a.responseTime), 0) /
-    agentPerformance.length
-  ).toFixed(1);
-
-  const teamResolutionRate = Math.round(
-    agentPerformance.reduce((sum, a) => sum + a.resolutionRate, 0) /
-      agentPerformance.length
-  );
-
-  const totalResolved = agentPerformance.reduce(
-    (sum, a) => sum + a.resolvedCount,
-    0
-  );
-
-  const teamRating = (
-    agentPerformance.reduce((sum, a) => sum + parseFloat(a.rating), 0) /
-    agentPerformance.length
-  ).toFixed(1);
-
   const topPerformer = agentPerformance[0];
-  const maxResolved = topPerformer?.resolvedCount || 1;
+  const maxResolved = Math.max(topPerformer?.resolvedCount || 1, 1);
 
   return (
     <>
@@ -83,25 +91,27 @@ export default async function PerformancePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl p-6 shadow-sm border">
             <p className="text-gray-500 text-sm mb-1">Team Avg Response</p>
-            <p className="text-3xl font-bold text-gray-800">{teamAvgResponse}h</p>
-            <p className="text-xs text-green-500 mt-1">↓ 12% vs last week</p>
+            <p className="text-3xl font-bold text-gray-800">{teamStats.avgResponseTimeHours}h</p>
+            <p className="text-xs text-gray-500 mt-1">Average first response</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border">
             <p className="text-gray-500 text-sm mb-1">Team Resolution Rate</p>
-            <p className="text-3xl font-bold text-gray-800">{teamResolutionRate}%</p>
-            <p className="text-xs text-green-500 mt-1">↑ 5% vs last week</p>
+            <p className="text-3xl font-bold text-gray-800">{teamStats.teamResolutionRate}%</p>
+            <p className="text-xs text-gray-500 mt-1">Resolved / Assigned</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border">
             <p className="text-gray-500 text-sm mb-1">Tickets Resolved</p>
-            <p className="text-3xl font-bold text-gray-800">{totalResolved}</p>
+            <p className="text-3xl font-bold text-gray-800">{teamStats.totalResolved}</p>
             <p className="text-xs text-gray-500 mt-1">This week</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border">
             <p className="text-gray-500 text-sm mb-1">Customer Satisfaction</p>
             <p className="text-3xl font-bold text-gray-800">
-              {teamRating}<span className="text-lg text-gray-400">/5</span>
+              {teamStats.avgRating}<span className="text-lg text-gray-400">/5</span>
             </p>
-            <p className="text-xs text-green-500 mt-1">↑ 0.2 vs last week</p>
+            <p className="text-xs text-gray-500 mt-1">
+              {teamStats.avgSatisfaction} ratings
+            </p>
           </div>
         </div>
 
@@ -122,14 +132,6 @@ export default async function PerformancePage() {
                   'bg-orange-50 border-orange-200 text-orange-400',
                   'text-gray-300',
                   'text-gray-300',
-                ];
-
-                const badgeColors = [
-                  'bg-amber-100 text-amber-700',
-                  'bg-gray-100 text-gray-700',
-                  'bg-orange-100 text-orange-700',
-                  'bg-gray-100 text-gray-700',
-                  'bg-gray-100 text-gray-700',
                 ];
 
                 return (
@@ -243,7 +245,7 @@ export default async function PerformancePage() {
                           {agent.role.toLowerCase()}
                         </p>
                       </div>
-                      {index === 0 && (
+                      {index === 0 && agent.resolvedCount > 0 && (
                         <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">
                           Top Performer
                         </span>
