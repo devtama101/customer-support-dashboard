@@ -1,8 +1,13 @@
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import { generateText, streamText } from 'ai';
 
-// OpenAI configuration
-export const aiModel = openai('gpt-4o-mini');
+// Groq configuration (OpenAI-compatible API)
+const groq = createOpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: 'https://api.groq.com/openai/v1',
+});
+
+export const aiModel = groq('llama-3.1-8b-instant');
 
 /**
  * Analyze sentiment of text

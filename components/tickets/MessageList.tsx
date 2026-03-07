@@ -1,5 +1,9 @@
-import type { TicketWithRelations } from '@/types';
+'use client';
+
+import { useEffect, useState, useRef } from 'react';
+import type { TicketWithRelations, Message } from '@/types';
 import { MessageBubble } from './MessageBubble';
+import { getPusherClient } from '@/lib/pusher-client';
 
 interface MessageListProps {
   ticket: TicketWithRelations;
@@ -7,7 +11,37 @@ interface MessageListProps {
 }
 
 export function MessageList({ ticket, currentAgentId }: MessageListProps) {
-  const { messages, customer, agent } = ticket;
+  const [messages, setMessages] = useState(ticket.messages);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { customer, agent } = ticket;
+
+  // Subscribe to real-time updates
+  useEffect(() => {
+    const pusher = getPusherClient();
+    if (!pusher) return;
+
+    const channel = pusher.subscribe(`private-ticket-${ticket.teamId}-${ticket.id}`);
+
+    channel.bind('new-message', (data: Message) => {
+      setMessages((prev) => {
+        // Avoid duplicates
+        if (prev.some((m) => m.id === data.id)) {
+          return prev;
+        }
+        return [...prev, data];
+      });
+    });
+
+    return () => {
+      channel.unbind_all();
+      pusher.unsubscribe(`private-ticket-${ticket.teamId}-${ticket.id}`);
+    };
+  }, [ticket.id, ticket.teamId]);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const getSenderName = (message: { senderType: string; senderId: string }) => {
     if (message.senderType === 'CUSTOMER') {
@@ -41,6 +75,7 @@ export function MessageList({ ticket, currentAgentId }: MessageListProps) {
           isCurrentUser={isCurrentUser(message)}
         />
       ))}
+      <div ref={messagesEndRef} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles, Plus, X } from 'lucide-react';
+import { Sparkles, Plus, X, Star } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import type { TicketWithRelations, TicketStatus, TicketPriority } from '@/types';
 import { useRouter, usePathname } from 'next/navigation';
-import { useTransition } from 'react';
+import { useTransition, useState } from 'react';
 
 interface TicketSidebarProps {
   ticket: TicketWithRelations;
@@ -200,6 +200,47 @@ export function TicketSidebar({ ticket, currentAgentId }: TicketSidebarProps) {
           )}
         </div>
       </div>
+
+      {/* Rating Section - Show for resolved/closed tickets */}
+      {(ticket.status === 'RESOLVED' || ticket.status === 'CLOSED') && (
+        <div className="mb-6">
+          <h3 className="text-sm font-medium text-gray-500 mb-3">Customer Rating</h3>
+          {ticket.rating ? (
+            <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center gap-1 mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-5 h-5 ${
+                      star <= ticket.rating!
+                        ? 'text-yellow-400 fill-yellow-400'
+                        : 'text-gray-300'
+                    }`}
+                  />
+                ))}
+                <span className="ml-2 font-semibold text-gray-700">
+                  {ticket.rating}/5
+                </span>
+              </div>
+              {ticket.ratingComment && (
+                <p className="text-sm text-gray-600 italic">
+                  "{ticket.ratingComment}"
+                </p>
+              )}
+              {ticket.ratedAt && (
+                <p className="text-xs text-gray-500 mt-2">
+                  Rated on {new Date(ticket.ratedAt).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="p-3 bg-gray-50 rounded-lg border border-dashed text-center">
+              <p className="text-sm text-gray-500 mb-2">No rating yet</p>
+              <p className="text-xs text-gray-400">Customer has not rated this ticket</p>
+            </div>
+          )}
+        </div>
+      )}
     </aside>
   );
 }
