@@ -52,7 +52,7 @@ Access the tickets list from the sidebar: **Dashboard** > **Tickets** or directl
 - **New Ticket** - Create a new ticket manually
 - **Click ticket row** - View ticket details
 
-![Tickets List](./docs/screenshots/tickets-list.png)
+![Tickets List](./screenshots/tickets-list.png)
 ### Ticket Detail View
 Click on any ticket to open the detail view with:
 #### Main Components
@@ -87,7 +87,7 @@ Status colors indicate the current state:
 - 🟠 **High** - Important but not urgent
 - 🟡 **Medium** - Normal priority
 - 🔵 **Low** - Can wait
-![Ticket Detail](./docs/screenshots/ticket-detail.png)
+![Ticket Detail](./screenshots/ticket-detail.png)
 ### AI Features
 #### AI Summarization
 Click **AI Summarize** button to generate an intelligent summary of the ticket conversation.
@@ -101,7 +101,7 @@ Click **Suggest Reply** to generate AI reply suggestions:
 - Based on ticket history and sentiment
 - Can be edited before sending
 - Helps maintain consistent communication tone
-![AI Features](./docs/screenshots/ai-features.png)
+![AI Features](./screenshots/ai-features.png)
 ---
 ## Customer Management
 ### Customer List
@@ -116,14 +116,14 @@ Access from the sidebar: **Dashboard** > **Customers** or directly with `/dashbo
 #### Actions
 - **Add Customer** - Create new customer record
 - **Click customer card** - View customer details
-![Customers List](./docs/screenshots/customers-list.png)
+![Customers List](./screenshots/customers-list.png)
 ### Customer Detail View
 Click on any customer to view their details including:
 - Contact information (name, email)
 - Ticket history
 - Sentiment trends
 - Quick actions (create ticket, view tickets)
-![Customer Detail](./docs/screenshots/customer-detail.png)
+![Customer Detail](./screenshots/customer-detail.png)
 ---
 ## Performance Metrics
 Access performance metrics from the sidebar: **Dashboard** > **Performance**.
@@ -154,7 +154,7 @@ Detailed metrics for each agent
 - **Resolution Rate** - Percentage of assigned tickets resolved
 - **Rating** - Customer satisfaction score
 - **Top Performer Badge** - Highlighted for the highest performer
-![Performance Page](./docs/screenshots/performance.png)
+![Performance Page](./screenshots/performance.png)
 ---
 ## Settings
 Access settings from the sidebar: **Dashboard** > **Settings**.
@@ -186,7 +186,7 @@ Automatically route tickets to the right agents based on conditions:
 - View existing rules with conditions and assignments
 - **Delete** rules that are no longer needed (click trash icon)
 - Rules are evaluated top-to-bottom based on creation order
-![Settings](./docs/screenshots/settings.png)
+![Settings](./screenshots/settings.png)
 ### Team Tab
 Manage team members and their roles (coming soon)
 ### Integrations Tab
@@ -248,7 +248,7 @@ Access the widget integration guide from the sidebar: **Dashboard** > **Widget D
 - **JavaScript API** - API documentation
 - **Live Preview** - Test the widget directly
 - **Floating Button Test** - Test the floating button
-![Widget Demo](./docs/screenshots/widget-demo.png)
+![Widget Demo](./screenshots/widget-demo.png)
 ---
 ## Customer Widget
 ### Accessing the Widget
@@ -275,7 +275,7 @@ Customers access the widget from any page with the widget ID in the URL. Example
 2. When resolved/closed, a **Rating prompt** - 5-star rating system appears
 3. **Submit Rating** - Save rating and optional feedback
 4. Customer receives thank you message
-![Customer Widget](./docs/screenshots/customer-widget.png)
+![Customer Widget](./screenshots/customer-widget.png)
 ### Rating System
 After a ticket is resolved, customers can rate their experience
 - **1-5 star rating** system
