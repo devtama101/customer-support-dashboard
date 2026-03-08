@@ -72,10 +72,19 @@ See `.env.example` for all available options.
 
 - [x] Database schema
 - [x] Project setup
-- [ ] Core ticket system
-- [ ] AI integration
-- [ ] Dashboard analytics
-- [ ] Customer chat widget
+- [x] Core ticket system
+- [x] AI integration
+- [x] Dashboard analytics
+- [x] Customer chat widget
+- [x] Real-time updates (Pusher)
+- [x] Customer rating system
+- [x] Performance metrics
+- [x] Settings & auto-assignment
+
+## Documentation
+
+- [User Manual](./docs/user-manual.md) - Complete guide for using SupportHub
+- [Coding Conventions](./CONVENTIONS.md) - Development standards and patterns
 
 ## License
 
