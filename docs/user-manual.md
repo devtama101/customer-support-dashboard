@@ -101,7 +101,6 @@ Click **Suggest Reply** to generate AI reply suggestions:
 - Based on ticket history and sentiment
 - Can be edited before sending
 - Helps maintain consistent communication tone
-![AI Features](./screenshots/ai-features.png)
 ---
 ## Customer Management
 ### Customer List
@@ -123,7 +122,6 @@ Click on any customer to view their details including:
 - Ticket history
 - Sentiment trends
 - Quick actions (create ticket, view tickets)
-![Customer Detail](./screenshots/customer-detail.png)
 ---
 ## Performance Metrics
 Access performance metrics from the sidebar: **Dashboard** > **Performance**.
@@ -275,7 +273,6 @@ Customers access the widget from any page with the widget ID in the URL. Example
 2. When resolved/closed, a **Rating prompt** - 5-star rating system appears
 3. **Submit Rating** - Save rating and optional feedback
 4. Customer receives thank you message
-![Customer Widget](./screenshots/customer-widget.png)
 ### Rating System
 After a ticket is resolved, customers can rate their experience
 - **1-5 star rating** system
