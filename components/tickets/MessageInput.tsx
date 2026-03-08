@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, Lightbulb, Bold, Italic, Link as LinkIcon, List, Code } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,11 +8,19 @@ import { Textarea } from '@/components/ui/textarea';
 interface MessageInputProps {
   ticketId: string;
   agentId: string;
+  initialMessage?: string | null;
   onReplyGenerated?: (reply: string) => void;
 }
 
-export function MessageInput({ ticketId, agentId, onReplyGenerated }: MessageInputProps) {
+export function MessageInput({ ticketId, agentId, initialMessage, onReplyGenerated }: MessageInputProps) {
   const [message, setMessage] = useState('');
+
+  // Update message when initialMessage changes (from header button)
+  useEffect(() => {
+    if (initialMessage) {
+      setMessage(initialMessage);
+    }
+  }, [initialMessage]);
   const [isSending, setIsSending] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 

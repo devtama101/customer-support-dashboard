@@ -190,12 +190,12 @@ export function TicketSidebar({ ticket, currentAgentId }: TicketSidebarProps) {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-500">Created</span>
-            <span>{ticket.createdAt.toLocaleDateString()}</span>
+            <span>{new Date(ticket.createdAt).toLocaleDateString()}</span>
           </div>
           {ticket.resolvedAt && (
             <div className="flex justify-between">
               <span className="text-gray-500">Resolved</span>
-              <span>{ticket.resolvedAt.toLocaleDateString()}</span>
+              <span>{new Date(ticket.resolvedAt).toLocaleDateString()}</span>
             </div>
           )}
         </div>

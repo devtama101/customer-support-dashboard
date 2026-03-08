@@ -14,9 +14,10 @@ const senderColors: Record<SenderType, string> = {
   AGENT: 'bg-blue-50 border border-blue-200',
 };
 
-function formatRelativeTime(date: Date): string {
+function formatRelativeTime(date: Date | string): string {
   const now = new Date();
-  const diff = now.getTime() - date.getTime();
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const diff = now.getTime() - dateObj.getTime();
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);

@@ -46,9 +46,10 @@ function getEngagementBadge(ticketCount: number): { label: string; className: st
   return { label: 'Low Engagement', className: 'bg-gray-100 text-gray-700' };
 }
 
-function formatRelativeTime(date: Date): string {
+function formatRelativeTime(date: Date | string): string {
   const now = new Date();
-  const diff = now.getTime() - date.getTime();
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const diff = now.getTime() - dateObj.getTime();
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const days = Math.floor(hours / 24);
 
@@ -75,7 +76,7 @@ export function CustomerCard({ customer }: CustomerCardProps) {
 
   // Get the most recent ticket date
   const lastTicketDate = customer.tickets && customer.tickets.length > 0
-    ? new Date(Math.max(...customer.tickets.map((t) => t.createdAt.getTime())))
+    ? new Date(Math.max(...customer.tickets.map((t) => new Date(t.createdAt).getTime())))
     : customer.createdAt;
 
   return (

@@ -1,14 +1,11 @@
 import { auth } from '@/lib/auth';
 import { Header } from '@/components/layout/Header';
 import { getTicketById } from '@/actions';
-import { redirect, notFound } from 'next/navigation';
-import { ArrowLeft, Sparkles, Lightbulb } from 'lucide-react';
+import { notFound } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { AISummaryCard } from '@/components/tickets/AISummaryCard';
-import { MessageList } from '@/components/tickets/MessageList';
-import { MessageInput } from '@/components/tickets/MessageInput';
-import { TicketSidebar } from '@/components/tickets/TicketSidebar';
+import { TicketContent } from '@/components/tickets/TicketContent';
+import { TicketActions } from '@/components/tickets/TicketActions';
 import type { Metadata } from 'next';
 
 interface TicketDetailPageProps {
@@ -64,6 +61,17 @@ export default async function TicketDetailPage({
   // Generate ticket ID display (T-XXXX format)
   const ticketIdDisplay = `T-${ticket.id.slice(0, 6).toUpperCase()}`;
 
+  // Serialize ticket for client component (convert Date objects to strings)
+  const serializedTicket = {
+    ...ticket,
+    createdAt: ticket.createdAt.toISOString(),
+    updatedAt: ticket.updatedAt.toISOString(),
+    messages: ticket.messages.map((msg) => ({
+      ...msg,
+      createdAt: msg.createdAt.toISOString(),
+    })),
+  };
+
   return (
     <>
       <Header
@@ -85,45 +93,13 @@ export default async function TicketDetailPage({
         }
         subtitle=""
         actions={
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="gap-2">
-              <Sparkles className="w-4 h-4 text-purple-600" />
-              AI Summarize
-            </Button>
-            <Button variant="outline" className="gap-2">
-              <Lightbulb className="w-4 h-4 text-amber-500" />
-              Suggest Reply
-            </Button>
-          </div>
+          ticket.status !== 'CLOSED' && currentAgentId ? (
+            <TicketActions ticketId={ticket.id} />
+          ) : null
         }
       />
 
-      <div className="flex-1 flex">
-        {/* Messages Area */}
-        <div className="flex-1 flex flex-col">
-          <AISummaryCard summary={ticket.aiSummary} />
-          <MessageList ticket={ticket} currentAgentId={currentAgentId} />
-
-          {/* Reply Editor - only show if ticket is not closed */}
-          {ticket.status !== 'CLOSED' && currentAgentId ? (
-            <MessageInput
-              ticketId={ticket.id}
-              agentId={currentAgentId}
-            />
-          ) : ticket.status === 'CLOSED' ? (
-            <div className="border-t bg-gray-50 p-6 text-center text-gray-500">
-              This ticket is closed. Reopen to send messages.
-            </div>
-          ) : (
-            <div className="border-t bg-gray-50 p-6 text-center text-gray-500">
-              You must be assigned to this ticket to send messages.
-            </div>
-          )}
-        </div>
-
-        {/* Sidebar - Ticket Details */}
-        <TicketSidebar ticket={ticket} currentAgentId={currentAgentId} />
-      </div>
+      <TicketContent ticket={serializedTicket as any} currentAgentId={currentAgentId} />
     </>
   );
 }
