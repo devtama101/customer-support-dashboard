@@ -1,13 +1,32 @@
 import { auth } from '@/lib/auth';
 import { Header } from '@/components/layout/Header';
-import { Trophy, Download, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Trophy } from 'lucide-react';
 import { getAgents, getAgentPerformance, getTeamStats } from '@/actions';
 import type { AgentPerformanceData, TeamPerformanceStats } from '@/actions/performance';
+import { PerformanceFilters } from '@/components/performance/PerformanceFilters';
+import { PerformanceChart } from '@/components/performance/PerformanceChart';
+import { ExportButton } from '@/components/performance/ExportButton';
 
-export default async function PerformancePage() {
+interface PerformancePageProps {
+  searchParams: Promise<{ period?: string }>;
+}
+
+const periodConfig = {
+  week: { days: 7, label: 'This week' },
+  month: { days: 30, label: 'This month' },
+  quarter: { days: 90, label: 'This quarter' },
+} as const;
+
+type PeriodKey = keyof typeof periodConfig;
+
+export default async function PerformancePage({ searchParams }: PerformancePageProps) {
   const session = await auth();
   const teamId = session?.user?.teamId;
+
+  // Read period from URL params
+  const { period = 'week' } = await searchParams;
+  const periodKey = (period as PeriodKey) in periodConfig ? (period as PeriodKey) : 'week';
+  const { days, label: periodLabel } = periodConfig[periodKey];
 
   if (!teamId) {
     return (
@@ -28,8 +47,8 @@ export default async function PerformancePage() {
   try {
     [agents, agentPerformanceData, teamStats] = await Promise.all([
       getAgents(),
-      getAgentPerformance(teamId, 7),
-      getTeamStats(teamId, 7),
+      getAgentPerformance(teamId, days),
+      getTeamStats(teamId, days),
     ]);
   } catch (error) {
     console.error('Failed to load performance data:', error);
@@ -58,33 +77,30 @@ export default async function PerformancePage() {
   const topPerformer = agentPerformance[0];
   const maxResolved = Math.max(topPerformer?.resolvedCount || 1, 1);
 
+  // Prepare chart data
+  const chartData = agentPerformance.slice(0, 5).map((agent) => ({
+    id: agent.id,
+    name: agent.user?.name || 'Unknown',
+    resolvedCount: agent.resolvedCount,
+    responseTime: agent.responseTime,
+    rating: agent.rating,
+    resolutionRate: agent.resolutionRate,
+  }));
+
   return (
     <>
       <Header
         title="Agent Performance"
         subtitle="Track team metrics and individual performance"
         actions={
-          <Button variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
-            Export Report
-          </Button>
+          <ExportButton teamId={teamId} period={periodKey} />
         }
       />
 
       <div className="p-8">
         {/* Time Filter */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 bg-white rounded-lg border p-1">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">
-              This Week
-            </button>
-            <button className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md text-sm">
-              This Month
-            </button>
-            <button className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md text-sm">
-              This Quarter
-            </button>
-          </div>
+          <PerformanceFilters />
         </div>
 
         {/* Team Overview Stats */}
@@ -102,7 +118,7 @@ export default async function PerformancePage() {
           <div className="bg-white rounded-xl p-6 shadow-sm border">
             <p className="text-gray-500 text-sm mb-1">Tickets Resolved</p>
             <p className="text-3xl font-bold text-gray-800">{teamStats.totalResolved}</p>
-            <p className="text-xs text-gray-500 mt-1">This week</p>
+            <p className="text-xs text-gray-500 mt-1">{periodLabel}</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border">
             <p className="text-gray-500 text-sm mb-1">Customer Satisfaction</p>
@@ -181,45 +197,7 @@ export default async function PerformancePage() {
           </div>
 
           {/* Performance Chart */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border">
-            <div className="p-4 border-b flex items-center justify-between">
-              <h3 className="font-semibold">Weekly Comparison</h3>
-              <select className="text-sm border rounded px-2 py-1">
-                <option>Tickets Resolved</option>
-                <option>Response Time</option>
-                <option>Satisfaction</option>
-              </select>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                {agentPerformance.slice(0, 5).map((agent) => (
-                  <div key={agent.id}>
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium">
-                          {agent.user?.name?.charAt(0) || 'A'}
-                        </div>
-                        <span className="text-sm font-medium">
-                          {agent.user?.name || 'Unknown'}
-                        </span>
-                      </div>
-                      <span className="text-sm text-gray-500">
-                        {agent.resolvedCount} tickets
-                      </span>
-                    </div>
-                    <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
-                        style={{
-                          width: `${(agent.resolvedCount / maxResolved) * 100}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <PerformanceChart agents={chartData} maxResolved={maxResolved} />
         </div>
 
         {/* Detailed Agent Cards */}

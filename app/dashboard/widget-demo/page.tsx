@@ -1,14 +1,30 @@
 import { Header } from '@/components/layout/Header';
 import { Code } from 'lucide-react';
-import { getTeam } from '@/actions';
+import { auth } from '@/lib/auth';
 import { CopyButton } from '@/components/ui/CopyButton';
 
 // This is a demo page showing how to embed the widget
 export default async function WidgetDemoPage() {
-  // Get the default team for the demo
-  const teams = await getTeam(null);
+  // Get the team ID from the authenticated session
+  const session = await auth();
+  const teamId = session?.user?.teamId;
 
-  const teamId = teams?.id || 'default-team-id';
+  // Handle case where user has no team
+  if (!teamId) {
+    return (
+      <>
+        <Header
+          title="Widget Integration"
+          subtitle="Embed the support widget on your website"
+        />
+        <div className="p-8">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-800">
+            No team found. Please contact your administrator.
+          </div>
+        </div>
+      </>
+    );
+  }
   const widgetUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/widget/embed.js`;
 
   const embedCode = `<!-- SupportHub Widget -->
