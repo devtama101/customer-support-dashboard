@@ -81,3 +81,7 @@ storybook-static
 
 # Turbo
 .turbo
+
+# Playwright test artifacts
+.playwright-mcp/
+*-fixed.png
