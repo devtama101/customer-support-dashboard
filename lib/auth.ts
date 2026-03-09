@@ -61,16 +61,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (!user) {
-          // For OAuth, we need to handle first-time setup
-          // Create user but they'll need to be assigned to a team
-          user = await prisma.user.create({
-            data: {
-              email: profile.email,
-              name: profile.name,
-              image: profile.picture,
-            },
-            include: { agents: true },
+          // Create User + Team + Agent in a transaction for first-time OAuth users
+          const result = await prisma.$transaction(async (tx) => {
+            // 1. Create the user
+            const newUser = await tx.user.create({
+              data: {
+                email: profile.email,
+                name: profile.name,
+                image: profile.picture,
+              },
+            });
+
+            // 2. Create a personal team for the user
+            const team = await tx.team.create({
+              data: {
+                name: `${profile.name || profile.email}'s Team`,
+              },
+            });
+
+            // 3. Create agent record linking user to team as ADMIN
+            await tx.agent.create({
+              data: {
+                userId: newUser.id,
+                teamId: team.id,
+                role: 'ADMIN',
+              },
+            });
+
+            // Return user with agents relation
+            return tx.user.findUnique({
+              where: { id: newUser.id },
+              include: { agents: true },
+            });
           });
+
+          user = result;
         }
 
         const agent = user.agents[0];
