@@ -98,6 +98,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user = result;
         }
 
+        if (!user) {
+          throw new Error('Failed to create or retrieve user');
+        }
+
         const agent = user.agents[0];
 
         return {
